@@ -1,0 +1,41 @@
+version: '3.9'
+services:
+  auth-api:
+    image: giorgosdi/auth-api
+    depends_on:
+      - redis
+    ports:
+      - 5001:5001
+    environment:
+      - HTTP_PORT=5001
+      - JWT_SECRET=secret
+  core-api:
+    image: giorgosdi/core-api
+    restart: always
+    depends_on:
+      - redis
+    ports:
+      - 5002:5002
+    links:
+      - redis:db
+    environment:
+      - HTTP_PORT=5002
+      - JWT_SECRET=secret
+      - REDIS_URL=redis://gr4vy-challenge_redis_1:6379/0
+  redis:
+    image: redis:7.0.0
+    ports:
+      - 6379:6379
+  router:
+    image: giorgosdi/router
+    ports:
+      - 80:80
+    environment:
+      - HTTP_PORT=80
+  psp:
+    image: giorgosdi/psp-connector
+    ports:
+      - 5003:5003
+    environment:
+      - HTTP_PORT=5003
+      - REDIS_URL=redis://gr4vy-challenge_redis_1:6379/0

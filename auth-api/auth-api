@@ -1,0 +1,7 @@
+FROM python:3.9-alpine3.14
+RUN apk update
+COPY . .
+RUN pip install -r requirements.txt
+ARG port secret
+ENV HTTP_PORT=$port JWT_SECRET=$secret
+ENTRYPOINT ["python", "main.py"]
